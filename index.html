@@ -7,26 +7,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
-        body { font-family: 'Poppins', sans-serif; background-color: #0D1117; color: #E5E7EB; }
-        .hidden { display: none !important; }
+        body { font-family: 'Poppins', sans-serif; background-color: #0D1117; color: #E5E7EB; overflow-x: hidden; scroll-behavior: smooth; }
+        .page, .modal-backdrop, #floating-buttons { transition: opacity 0.4s ease-in-out; }
+        .modal-content { transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out; transform: scale(0.95); opacity: 0; }
+        .modal-backdrop.active .modal-content { transform: scale(1); opacity: 1; }
         .modal-backdrop { background-color: rgba(10, 10, 20, 0.8); backdrop-filter: blur(5px); }
-        .card { background: linear-gradient(145deg, #1f2937, #111827); border: 1px solid #30363d; }
-        .payment-method { border: 2px solid #374151; }
-        .payment-method.selected { border-color: #2563EB; background-color: rgba(30, 58, 138, 0.5); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .anim-fade-up { animation: fadeInUp 0.7s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.2s; } .delay-2 { animation-delay: 0.4s; } .delay-3 { animation-delay: 0.6s; }
+        .card { background: linear-gradient(145deg, #1f2937, #111827); border: 1px solid #30363d; transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); }
+        .payment-method { border: 2px solid #374151; transition: all 0.2s ease; }
+        .payment-method.selected, .payment-method:hover { border-color: #2563EB; background-color: rgba(30, 58, 138, 0.5); }
     </style>
 </head>
 <body class="antialiased">
 
-    <section id="hero" class="h-screen flex items-center justify-center p-4">
+    <section id="hero" class="page h-screen flex items-center justify-center p-4">
         <div class="text-center">
-            <img src="https://iili.io/FROfA6Q.png" alt="Profil Turz Store" class="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full mb-8 border-4 border-cyan-500">
-            <h1 class="text-4xl md:text-5xl font-black">Selamat Datang di Turz Store</h1>
-            <p class="text-lg md:text-xl text-gray-300 mt-4 max-w-2xl mx-auto">Solusi Otomatis untuk Kebutuhan Script dan Aplikasi Premium Anda.</p>
-            <button id="mulai-btn" class="mt-10 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg">Lihat Produk</button>
+            <img src="https://iili.io/FROfA6Q.png" alt="Profil Turz Store" class="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full mb-8 border-4 border-cyan-500 shadow-lg shadow-cyan-500/20">
+            <h1 class="text-4xl md:text-5xl font-black anim-fade-up delay-1">Selamat Datang di Turz Store</h1>
+            <p class="text-lg md:text-xl text-gray-300 mt-4 max-w-2xl mx-auto anim-fade-up delay-2">Solusi Otomatis untuk Kebutuhan Script dan Aplikasi Premium Anda.</p>
+            <button id="mulai-btn" class="mt-10 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-110 anim-fade-up delay-3">Lihat Produk</button>
         </div>
     </section>
 
-    <main id="etalase" class="container mx-auto p-6 md:p-8 hidden">
+    <main id="etalase" class="page container mx-auto p-6 md:p-8 hidden opacity-0">
         <header class="text-center mb-12"><h1 class="text-4xl md:text-5xl font-bold text-cyan-400">Etalase Produk</h1><p class="text-lg md:text-xl text-gray-300 mt-2">Pembelian instan, produk langsung dikirim.</p></header>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div class="card rounded-xl shadow-lg flex flex-col p-6 min-h-[22rem]"><div class="flex-grow"><svg class="w-16 h-16 mb-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg><h3 class="text-3xl font-black mb-2">Tredict Invictus</h3><p class="text-gray-400">Lisensi premium untuk aplikasi Tredict Invictus.</p></div><div class="mt-6"><div class="text-3xl font-bold text-cyan-400 mb-4">Rp110.000</div><button class="buy-btn w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 rounded-lg" data-name="Tredict Invictus" data-price="110000">Beli Sekarang</button></div></div>
@@ -36,110 +42,107 @@
         </div>
         <footer class="text-center text-gray-500 mt-16 border-t border-gray-700 pt-8">&copy; 2025 Turz Store. All Rights Reserved.</footer>
     </main>
+
+    <section id="purchase-success" class="page hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-content w-full max-w-lg text-center bg-gray-800 rounded-lg shadow-2xl p-6 md:p-8 border border-gray-700">
+            <svg class="w-16 h-16 text-green-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h2 class="text-3xl font-bold text-white mb-2">Pembelian Berhasil!</h2><p class="text-gray-300 mb-6">Terima kasih telah memesan di Turz Store.</p>
+            <div class="bg-gray-900 text-left rounded-lg p-4 mb-6 border border-gray-700 space-y-2"><h4 class="font-bold text-lg text-cyan-400 border-b border-gray-700 pb-2 mb-3">INVOICE</h4><p><strong>Invoice ID:</strong> <span id="invoice-id"></span></p><p><strong>Tanggal:</strong> <span id="invoice-date"></span></p><p><strong>Produk:</strong> <span id="product-name"></span></p><p class="mt-4">Berikut adalah link informasi barang Anda:</p><a id="product-link" href="#" target="_blank" class="text-cyan-400 hover:underline break-words">https://turz-store.com/download/placeholder-link</a></div>
+            <button id="kembali-btn" class="mt-8 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-lg">Kembali ke Toko</button>
+        </div>
+    </section>
+
+    <div id="payment-modal" class="modal-backdrop hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-gray-800 rounded-xl shadow-2xl w-full max-w-md border border-gray-700">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700"><h3 class="text-xl font-bold">Konfirmasi Pesanan</h3><button class="close-modal-btn text-gray-400 text-3xl">&times;</button></div>
+            <div class="p-6"><div class="text-center mb-6"><p id="modal-product-name" class="text-2xl font-bold"></p><p id="modal-product-price" class="text-3xl font-bold text-cyan-400"></p></div><div class="space-y-4"><div><label for="customer-name" class="block text-sm font-medium mb-1">Nama Anda</label><input type="text" id="customer-name" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-2.5" placeholder="Masukkan nama Anda..."></div><div><label class="block text-sm font-medium mb-2">Metode Pembayaran</label><div class="grid grid-cols-2 gap-3">
+                <button class="payment-method selected p-3 rounded-lg">QRIS</button><button class="payment-method p-3 rounded-lg">DANA</button><button class="payment-method p-3 rounded-lg">OVO</button><button class="payment-method p-3 rounded-lg">Gopay</button>
+            </div></div></div><button id="lanjut-bayar-btn" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg">Lanjutkan Pembayaran</button></div>
+        </div>
+    </div>
+    <div id="panduan-modal" class="modal-backdrop hidden opacity-0 fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg border border-gray-700">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700"><h3 class="text-xl font-bold">Panduan Membeli</h3><button class="close-modal-btn text-gray-400 text-3xl">&times;</button></div>
+            <div class="p-6 space-y-4">
+                <div class="flex items-start space-x-4"><div class="flex-shrink-0 w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center font-bold text-black">1</div><div><h4 class="font-bold">Pilih Produk</h4><p class="text-gray-400">Klik "Beli Sekarang" pada produk yang Anda inginkan.</p></div></div>
+                <div class="flex items-start space-x-4"><div class="flex-shrink-0 w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center font-bold text-black">2</div><div><h4 class="font-bold">Isi Data & Bayar</h4><p class="text-gray-400">Isi nama Anda, pilih metode pembayaran, dan selesaikan pembayaran.</p></div></div>
+                <div class="flex items-start space-x-4"><div class="flex-shrink-0 w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center font-bold text-black">3</div><div><h4 class="font-bold">Produk Dikirim Otomatis</h4><p class="text-gray-400">Anda akan langsung menerima informasi dan link download produk.</p></div></div>
+            </div>
+        </div>
+    </div>
     
+    <div id="floating-buttons" class="fixed bottom-5 right-5 z-40 hidden opacity-0 transition-opacity duration-500">
+        <div class="flex flex-col items-end space-y-3">
+            <button id="panduan-btn" class="flex items-center bg-gray-700 hover:bg-gray-600 font-semibold py-2 px-4 rounded-lg shadow-lg"><svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Panduan</button>
+            <a href="https://wa.me/6285241505625" target="_blank" class="flex items-center bg-green-500 hover:bg-green-600 font-semibold py-2 px-4 rounded-lg shadow-lg"><svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.487 5.235 3.487 8.413c-.003 6.557-5.338 11.892-11.894 11.892-1.99 0-3.903-.52-5.687-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.447-4.433-9.886-9.888-9.886-5.448 0-9.886 4.434-9.889 9.886-.001 2.267.655 4.398 1.908 6.188l.29.443-1.182 4.324 4.404-1.157.426.288z"/></svg>CS (WA)</a>
+        </div>
+    </div>
+
     <script>
-        // --- SCRIPT VERSI PALING AMAN DAN DIJAMIN BERFUNGSI ---
-        function setupStore() {
-            console.log("Script Turz Store Mulai Dijalankan.");
-
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Pemilihan Elemen ---
             const getEl = (id) => document.getElementById(id);
-
-            const heroPage = getEl('hero');
-            const etalasePage = getEl('etalase');
+            const hero = getEl('hero');
+            const etalase = getEl('etalase');
             const successPage = getEl('purchase-success');
+            const floatingButtons = getEl('floating-buttons');
             const paymentModal = getEl('payment-modal');
             const panduanModal = getEl('panduan-modal');
-            const floatingButtons = getEl('floating-buttons');
+
             let currentProduct = {};
-            
-            // --- FUNGSI DASAR UNTUK MENAMPILKAN/SEMBUNYIKAN ---
-            const show = (el) => el.classList.remove('hidden');
-            const hide = (el) => el.classList.add('hidden');
-            
-            // --- EVENT LISTENERS (PENDAFTARAN EVENT) ---
-            
+
+            // --- Fungsi Pembantu ---
+            function show(el) {
+                el.classList.remove('hidden');
+                setTimeout(() => { el.style.opacity = '1'; }, 20);
+            }
+            function hide(el) {
+                el.style.opacity = '0';
+                setTimeout(() => { el.classList.add('hidden'); }, 400);
+            }
+            function openModal(modal) {
+                show(modal);
+                modal.classList.add('active');
+                hide(floatingButtons);
+            }
+            function closeModal(modal) {
+                hide(modal);
+                modal.classList.remove('active');
+                // Hanya tampilkan tombol bantuan jika kita kembali ke etalase
+                if (!etalase.classList.contains('hidden')) {
+                    show(floatingButtons);
+                }
+            }
+
+            // --- Pendaftaran Event (Cara yang Lebih Stabil) ---
+
             // Tombol Mulai -> Tampilkan Etalase
             getEl('mulai-btn').addEventListener('click', () => {
-                console.log("Tombol 'Lihat Produk' di-klik.");
-                hide(heroPage);
-                show(etalasePage);
+                hide(hero);
+                show(etalase);
                 show(floatingButtons);
             });
 
             // Tombol Kembali ke Toko -> Tampilkan Etalase
             getEl('kembali-btn').addEventListener('click', () => {
-                console.log("Tombol 'Kembali ke Toko' di-klik.");
                 hide(successPage);
-                show(etalasePage);
+                show(etalase);
                 show(floatingButtons);
             });
 
             // Tombol Beli di setiap kartu produk
             document.querySelectorAll('.buy-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const name = btn.dataset.name;
-                    const price = parseInt(btn.dataset.price, 10);
-                    console.log(`Tombol Beli di-klik untuk produk: ${name}, Harga: ${price}`);
-                    currentProduct = { name, price };
-
-                    if (price === 0) {
+                    currentProduct = { name: btn.dataset.name, price: parseInt(btn.dataset.price, 10) };
+                    if (currentProduct.price === 0) {
                         // Logika untuk produk gratis
                         getEl('invoice-id').innerText = `TRZ-${Math.floor(Math.random() * 90000) + 10000}`;
                         getEl('invoice-date').innerText = new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' });
-                        getEl('product-name').innerText = name;
-                        hide(etalasePage);
+                        getEl('product-name').innerText = currentProduct.name;
+                        hide(etalase);
                         hide(floatingButtons);
                         show(successPage);
                     } else {
                         // Logika untuk produk berbayar
-                        getEl('modal-product-name').innerText = name;
-                        getEl('modal-product-price').innerText = 'Rp' + price.toLocaleString('id-ID');
-                        show(paymentModal);
-                        hide(floatingButtons);
-                    }
-                });
-            });
-            
-            // Tombol Bantuan
-            getEl('panduan-btn').addEventListener('click', () => {
-                console.log("Tombol 'Panduan' di-klik.");
-                show(panduanModal);
-                hide(floatingButtons);
-            });
-
-            // Tombol Tutup untuk semua modal
-            document.querySelectorAll('.close-modal-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const modalToClose = btn.closest('.modal-backdrop');
-                    console.log(`Tombol Tutup di-klik untuk modal: ${modalToClose.id}`);
-                    hide(modalToClose);
-                    // Hanya tampilkan tombol bantuan jika kita ada di etalase
-                    if (!etalasePage.classList.contains('hidden')) {
-                        show(floatingButtons);
-                    }
-                });
-            });
-
-            // Tombol Lanjutkan Pembayaran di Modal
-            getEl('lanjut-bayar-btn').addEventListener('click', () => {
-                const customerName = getEl('customer-name').value;
-                if (!customerName) {
-                    alert('Silakan masukkan nama Anda terlebih dahulu.');
-                    return;
-                }
-                const saweriaUsername = 'turzxd'; // GANTI DENGAN USERNAME SAWERIA ANDA
-                const message = `Pembelian ${currentProduct.name} - oleh ${customerName}`;
-                const saweriaURL = `https://saweria.co/${saweriaUsername}?amount=${currentProduct.price}&msg=${encodeURIComponent(message)}`;
-                console.log(`Mengarahkan ke pembayaran: ${saweriaURL}`);
-                window.location.href = saweriaURL;
-            });
-            
-            console.log("Semua event listener berhasil dipasang.");
-        }
-
-        // Menjalankan seluruh script setelah halaman siap
-        document.addEventListener('DOMContentLoaded', setupStore);
-    </script>
-
-</body>
-</html>
+                        getEl('modal-product-name').innerText = currentProduct.name;
+                        getEl('modal-product-price').innerText = 'Rp' + currentProduct
